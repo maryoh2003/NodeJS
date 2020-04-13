@@ -47,7 +47,7 @@ function getUser(){ //로딩 시 사용자가 가져오는 함수
         userDiv.appendChild(span);
         userDiv.appendChild(edit);
         userDiv.appendChild(remove);
-        userDiv.appendChild(userDiv);
+        list.appendChild(userDiv);
       });
     } else{
       console.error(xhr.responseText);
