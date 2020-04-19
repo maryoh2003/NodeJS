@@ -1,0 +1,8 @@
+connect-flash
+
+상대적으로 중요도가 떨어지는 미들웨어지만 일회성 메시지들을 웹 브라우저에 나타낼 때 좋다
+express-session과 마찬가지로 직접 설치해주어야 한다
+connect-flash 미들웨어는 cookie-parser와 express-session을 사용하므로 이들보다는 뒤에 위치해야 한다
+
+flash 미들웨어는 req 객체에 req.flash 메서드를 추가한다
+req.flash(키, 값)으로 해당 키에 값을 설정하고, req.flash(키)로 해당 키에 대한 값을 불러온다

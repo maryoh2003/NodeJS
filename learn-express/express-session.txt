@@ -1,0 +1,23 @@
+express-session은 세션 관리용 미들웨어이다
+로그인 등의 이유로 세션을 구현할 때 매우 유용하다 
+express-generator로는 설치되지 않으므로 npm i express-session으로 직접 설치해야 한다
+
+express-session은 세션 관리 시 클라이언트에 쿠키를 보내는데 이를 세션쿠키라고 한다
+안전하게 쿠키를 전송하려면 쿠키에 서명을 추가해야 하고, 쿠키를 서명하는 데 secret의 값이 필요하다
+cookie-parser와 secret과 같게 설정해야 한다
+
+cookie옵션은 세션쿠키에 대한 설정이다.
+maxAge, domain, path, expires, sameSite, httpOnly, secure 등 일반적인 쿠키 옵션이 모두 제공된다
+현재 httpOnly를 사용해서 클라이언트에서 쿠키를 확인하지 못하도록 해둠
+배포 시에는 https를 적용하고 secure도 true로 해두는게 좋음
+
+코드에는 나와 있지 않지만 store라는 옵션도 있다
+현재는 메모리에 세션을 저장하도록 되어있다.
+문제는 서버를 재시작하면 메모리가 초기화되어 세션이 모두 사라진다는 것이다
+따라서 배포 시에는 store에 데이터베이스를 연결하여 세션을 유지해야한다
+보통 레디스(Redis)가 자주 쓰인다
+
+express-session은 req 객체 안에 req.session 객체를 만든다
+이 객체에 값을 대입하거나 삭제해서 세션을 변경할 수 있다
+나중에 세션을 한번에 삭제하려면 req.session.destory() 메서드를 호출하면 된다
+현재 세션의 아이디는 req.sessionID로 확인할 수 있다
