@@ -1,0 +1,99 @@
+CRUD란 Create, Read, Update, Delete의 두문자어로, 데이터베이스에서 많이 하는 작업 네가지를 일컫는다. 
+CRUD 작업을 하는 방법만 익혀도 웬만한 프로그램은 다 만들 수 있을 정도로 많이 사용된다.
+
+< CREATE >
+Create(생성)는 데이터를 생성해서 데이터베이스에 넣는 작업이다.
+데이터를 넣는 명령어는 INSERT INTO [테이블명] ([컬럼1], [컬럼 2], ...) VALUES ([값1], [값2], ...)이다.
+예시)
+INSERT INTO nodejs.users (name, age, married, comment) VALUES ('nero', 32, 1, '자기소개2');
+ => 즉, name에 zero, age에 24, married에 0, comment에 자기소개1이 들어가 있는 것이다.
+
+< READ > 
+Read(조회)는 데이터베이스에 있는 데이터를 조회하는 작업이다. 
+
+SELECT * FROM nodejs.users;
+=>
++----+------+-----+---------+-----------+---------------------+
+| id | name | age | married | comment   | created_at          |
++----+------+-----+---------+-----------+---------------------+
+|  1 | zero |  24 |       0 | 자기소개1 | 2020-04-25 23:35:10 |
+|  2 | nero |  32 |       1 | 자기소개2 | 2020-04-25 23:35:48 |
++----+------+-----+---------+-----------+---------------------+
+이 구문이 users 테이블의 모든 데이터를 조회하는 SQL 문이다.
+SELECT * FROM [테이블명] 형식이다.
+
+특정 컬럼만 조회하기 위해서는 조회를 원하는 컬럼을 SELECT 다음에 넣어주면 된다.
+
+이름과 결혼 여부만 조회하고 싶을 때 =>
+SELECT name, married FROM nodejs.users;
++------+---------+
+| name | married |
++------+---------+
+| zero |       0 |
+| nero |       1 |
++------+---------+
+
+WHERE 절을 사용하면 특정 조건을 가진 데이터만 조회할 수 있다. 
+결혼을 했고 나이가 30세 이상인 사용자를 조회하는 SQL 문 => (AND로 여러 조건을 묶어줄 수도 있다.)
+
+SELECT name, age FROM nodejs.users WHERE married=1 AND age >= 30;
++------+-----+
+| name | age |
++------+-----+
+| nero |  32 |
++------+-----+
+
+AND가 조건들을 모두 만족하는 데이터를 찾는다면 OR는 조건들 중 어느 하나라도 만족하는 데이터를 찾는다.
+
+SELECT id, name FROM nodejs.users WHERE married = 0 OR age >= 30;
++----+------+
+| id | name |
++----+------+
+|  1 | zero |
+|  2 | nero |
++----+------+
+
+ORDER BY [컬럼명] [ASC|DESC] 키워드를 사용하면 정렬도 가능하다.
+DESC는 내림차순, ASC는 오름차순이다.
+
+나이가 많은 순서대로 정렬 =>
+SELECT id, name FROM nodejs.users ORDER BY age DESC;
++----+------+
+| id | name |
++----+------+
+|  2 | nero |
+|  1 | zero |
++----+------+
+
+조회할 로우 개수를 설정할 수도 있다. LIMIT[숫자] 키워드를 사용하면 된다.
+
+하나만 조회하기 =>
+SELECT id, name FROM nodejs.users ORDER BY age DESC LIMIT 1;
++----+------+
+| id | name |
++----+------+
+|  2 | nero |
++----+------+
+
+로우 개수를 설정하면서 몇 개를 건너뛸지 설정할 수도 있다. 게시판 등의 페이지네이션 기능을 구현할 때 유용하다.
+예를 들어 첫 번째 페이지에 1~20번 게시물을 조회했다면, 두 번째 페이지에는 21~40번 게시물을 조회해야 한다.
+이때 처음 20개를 건너뛰고 다음 20개 게시물을 조회하라는 식의 명령이 가능하다. OFFSET [건너뛸 숫자] 키워드를 사용한다.
+
+SELECT id, name FROM nodejs.users ORDER BY age DESC LIMIT 1 OFFSET 1;
++----+------+
+| id | name |
++----+------+
+|  1 | zero |
++----+------+   => 하나를 건너뛰고 두번째꺼를 출력해줌
+
+< UPDATE > 
+Update(수정)는 데이터베이스에 있는 데이터를 수정하는 작업이다. 
+
+UPDATE nodejs.users SET comment = '바꿀 내용' WHERE id = 2;
+
+< DELETE >
+Delete(삭제)는 데이터베이스에 있는 데이터를 삭제하는 작업이다. 
+
+DELETE FROM nodejs.users WHERE id = 2;
+삭제 조건 역시 AND 나 OR 로 여러개를 동시에 사용할 수 있다.
+

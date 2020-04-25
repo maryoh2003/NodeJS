@@ -1,0 +1,15 @@
+관계 정의하기
+
+1: N 관계를 hasMany라는 메서드로 표현한다
+users 테이블의 로우 하나를 불러올 때 연결된 comments 테이블의 로우들도 같이 불러올 수 있다
+
+반대로 belongsTo 메서드도 있다
+comments 테이블의 로우를 불러올 때 연결된 users 테이블의 로우를 가져온다
+
+db.User.hasMany(db.Comment, {foreignKey: 'commenter', sourceKey: 'id'});
+db.Comment.belongsTo(db.User, {foreignKey: 'commenter', targetKey: 'id'});
+=> 시퀄라이즈는 이렇게 정의한 대로 테이블 간 관계를 파악해서 commenter 컬럼을 추가하고, 외래 키도 추가한다
+=> 외래 키 컬럼은 commenter고, users의 id 컬럼을 가리키고 있다
+=> foreignKey 속성에 commenter를 넣어준다
+=> hasMany 메서드에서는 sourceKey 속성에 id를 넣어주고, belongsTo 메서드는 targetKey 속성에 id를 넣어준다
+
