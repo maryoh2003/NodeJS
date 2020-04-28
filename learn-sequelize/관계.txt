@@ -1,0 +1,41 @@
+1:1 관계에서는 hasMany 메서드 대신 hasOne 메서드를 사용한다. 
+사용자 정보를 담고 있는 가상의 Info 모델이 있다고 하면 다음과 같이 표현할 수 있다.
+db.User.hasOne(db.Info, { foreignKey: 'user_id', sourceKey: 'id' });
+db.Info.belongsTo(db.User, {foreignKey: 'user_id', targetKey: 'id' });
+
+belongsTo와 hasOne이 일대일이니 반대여도 상관없다.
+
+
+N:M (다대다)
+시퀄라이즈에서는 N:M 관계를 표현하기 위해 belongsToMany 메서드가 있다.
+게시글 정보를 담고 있는 가상의 Post 모델과 해시태그 정보를 담고 있는 가상의 Hashtag 모델이 있다고 하면 다음과 같이 표현할 수 있다.
+db.Post.belongsToMany(db.Hashtag, { through: 'PostHashtag' });
+db.Hashtag.belongsToMany(db.Post, { through: 'PostHashtag' });
+
+N:M 관계 특성상 새로운 모델이 생성된다. through 속성에 그 이름을 적어주면 된다.
+새로 생성된 PostHashtag 모델에는 게시글과 해시태그의 아이디가 저장된다.
+N:M에서는 데이터를 조회할 때 여러 단계를 거쳐야 한다.
+노드 해시태그를 사용한 게시물을 조회하는 경우를 생각해보자.
+먼저 노드 해시태그를 Hashtag 모델에서 조회하고, 가져온 태그의 아이디(1)를 바탕으로 PostHashtag 모델에서 hashtagId가 1인 postId들을 찾아 Post 모델에서 정보를 가져온다.
+
+시퀄라이즈는 이 관정을 편하게 할 수 있도록 몇 가지 메서드를 지원한다.
+async (req, res, next) => {
+  const tag = await Hashtag.findOne({where: {title: '노드'}});
+  const posts = await tag.getPosts();
+}
+먼제 해시태그를 찾으면 그 해시태그에서 바로 getPost 메서드를 사용할 수 있다. 
+get + 모델이름의 복수형이다.
+
+//프로미스 형식
+Hashtag.findOne({ where: { title: '노드' }});
+  .then(tag => tag.getPosts())
+  .then(posts => console.log(posts));
+
+
+비슷한 것으로 add + 모델 이름의 복수형 메서드도 있다. 두 테이블 간 N:M 관계를 추가해준다. 다음 코드는 title이 노드인 해시태그와 게시글 아이디가 3인 게시글을 연결하는 코드다
+
+async (req, res, next) => {
+  const tag = await Hashtag.findOne({ where: { title: '노드' }});
+  await tag.addPosts(3)
+};
+PostHashtag 모델에 postId가 3이고 hashtagId가 1인 로우가 생성된다.

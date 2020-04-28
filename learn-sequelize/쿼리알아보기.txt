@@ -1,0 +1,23 @@
+쿼리 알아보기
+
+시퀄라이즈 CRUD 작업을 하려면 먼저 시퀄라이즈 쿼리에 대해 알아야 한다.
+SQL문을 자바스크립트로 생성하는 것이라 시퀄라이즈만의 방식이 있다.
+쿼리는 프로미스를 반환하므로 then을 붙여 결괏값을 받을 수 있다.
+async/await 문법과 같이 사용할 수도 있다.
+
+
+로우를 생성하는 쿼리부터 알아보겠다. 첫 줄이 SQL문이고, 그 아래는 시퀄라이즈 쿼리이다.
+INSERT INTO nodejs.users (name, age, married, comment) VALUES ('zero', 24, 0, '자기소개1');
+const {User} = require('../models')
+User.create({
+  name: 'zero',
+  age: 24,
+  married: false,
+  comment: '자기소개1',
+});
+
+models 모듈에서 User 모델을 불러와 create 메서드를 사용하면 된다.
+한 가지 주의할 점은 데이터를 넣을 때 MYSQL의 자료형이 아니라 시퀄라이즈 모델에 정의한 자료형대로 넣어야 한다는 것이다.
+이것이 married가 0이 아니라 false인 이유다.
+시퀄라이즈가 알아서 MYSQL 자료형으로 바꿔준다. 
+자료형이
